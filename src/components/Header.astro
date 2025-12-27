@@ -1,0 +1,257 @@
+---
+const navItems = [
+  { href: "#o-nas", label: "O nas" },
+  { href: "#oferta", label: "Oferta" },
+  { href: "#kontakt", label: "Kontakt" },
+];
+---
+
+<header class="header">
+  <div class="container header__container">
+    <a href="/" class="header__logo" aria-label="Strona główna">
+      <span class="header__logo-icon" aria-hidden="true">🥬</span>
+      <span class="header__logo-text">Kapusta</span>
+    </a>
+
+    <nav class="header__nav" aria-label="Nawigacja główna">
+      <ul class="header__nav-list">
+        {navItems.map((item) => (
+          <li class="header__nav-item">
+            <a href={item.href} class="header__nav-link">
+              {item.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <a href="tel:+48123456789" class="header__phone btn btn--primary">
+      <span aria-hidden="true">📞</span> Zadzwoń
+    </a>
+
+    <!-- Menu mobilne -->
+    <button
+      class="header__menu-toggle"
+      aria-label="Otwórz menu"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+    >
+      <span class="header__menu-icon"></span>
+    </button>
+  </div>
+
+  <!-- Menu mobilne -->
+  <nav id="mobile-menu" class="header__mobile-nav" aria-label="Menu mobilne" hidden>
+    <ul class="header__mobile-list">
+      {navItems.map((item) => (
+        <li class="header__mobile-item">
+          <a href={item.href} class="header__mobile-link">
+            {item.label}
+          </a>
+        </li>
+      ))}
+      <li class="header__mobile-item">
+        <a href="tel:+48123456789" class="header__mobile-link header__mobile-link--phone">
+          📞 Zadzwoń: +48 123 456 789
+        </a>
+      </li>
+    </ul>
+  </nav>
+</header>
+
+<style>
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background-color: var(--color-white);
+    box-shadow: var(--shadow-md);
+  }
+
+  .header__container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: var(--spacing-sm);
+    padding-bottom: var(--spacing-sm);
+    gap: var(--spacing-md);
+  }
+
+  .header__logo {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    text-decoration: none;
+    color: var(--color-primary-dark);
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+
+  .header__logo:hover,
+  .header__logo:focus {
+    color: var(--color-primary);
+  }
+
+  .header__logo-icon {
+    font-size: 2rem;
+  }
+
+  .header__nav {
+    display: none;
+  }
+
+  .header__nav-list {
+    display: flex;
+    gap: var(--spacing-lg);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .header__nav-link {
+    display: block;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    color: var(--color-dark);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: var(--font-size-large);
+    border-radius: var(--radius-sm);
+  }
+
+  .header__nav-link:hover,
+  .header__nav-link:focus {
+    color: var(--color-primary);
+    background-color: var(--color-light-green);
+  }
+
+  .header__phone {
+    display: none;
+    gap: var(--spacing-xs);
+  }
+
+  .header__menu-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    background: none;
+    border: 2px solid var(--color-primary);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    padding: 0;
+  }
+
+  .header__menu-icon {
+    display: block;
+    width: 24px;
+    height: 3px;
+    background-color: var(--color-primary);
+    position: relative;
+  }
+
+  .header__menu-icon::before,
+  .header__menu-icon::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    width: 24px;
+    height: 3px;
+    background-color: var(--color-primary);
+  }
+
+  .header__menu-icon::before {
+    top: -8px;
+  }
+
+  .header__menu-icon::after {
+    top: 8px;
+  }
+
+  .header__mobile-nav {
+    background-color: var(--color-white);
+    border-top: 1px solid var(--color-gray-light);
+    padding: var(--spacing-md);
+  }
+
+  .header__mobile-nav[hidden] {
+    display: none;
+  }
+
+  .header__mobile-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .header__mobile-item {
+    border-bottom: 1px solid var(--color-light);
+  }
+
+  .header__mobile-item:last-child {
+    border-bottom: none;
+  }
+
+  .header__mobile-link {
+    display: block;
+    padding: var(--spacing-md);
+    color: var(--color-dark);
+    text-decoration: none;
+    font-size: var(--font-size-large);
+    font-weight: 500;
+  }
+
+  .header__mobile-link:hover,
+  .header__mobile-link:focus {
+    background-color: var(--color-light-green);
+    color: var(--color-primary);
+  }
+
+  .header__mobile-link--phone {
+    color: var(--color-primary);
+    font-weight: 700;
+  }
+
+  /* Desktop */
+  @media (min-width: 769px) {
+    .header__nav {
+      display: block;
+    }
+
+    .header__phone {
+      display: flex;
+    }
+
+    .header__menu-toggle {
+      display: none;
+    }
+
+    .header__mobile-nav {
+      display: none !important;
+    }
+  }
+</style>
+
+<script>
+  const menuToggle = document.querySelector('.header__menu-toggle');
+  const mobileMenu = document.getElementById('mobile-menu');
+  const mobileLinks = document.querySelectorAll('.header__mobile-link');
+
+  if (menuToggle && mobileMenu) {
+    menuToggle.addEventListener('click', () => {
+      const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
+      menuToggle.setAttribute('aria-expanded', (!isExpanded).toString());
+      menuToggle.setAttribute('aria-label', isExpanded ? 'Otwórz menu' : 'Zamknij menu');
+      mobileMenu.hidden = isExpanded;
+    });
+
+    // Zamknij menu po kliknięciu w link
+    mobileLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        menuToggle.setAttribute('aria-expanded', 'false');
+        menuToggle.setAttribute('aria-label', 'Otwórz menu');
+        mobileMenu.hidden = true;
+      });
+    });
+  }
+</script>

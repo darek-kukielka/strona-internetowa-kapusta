@@ -1,0 +1,179 @@
+---
+const currentYear = new Date().getFullYear();
+
+const footerLinks = [
+  { href: "#o-nas", label: "O nas" },
+  { href: "#oferta", label: "Oferta" },
+  { href: "#kontakt", label: "Kontakt" },
+];
+
+const contactInfo = {
+  phone: "+48 123 456 789",
+  phoneLink: "+48123456789",
+  email: "kontakt@example.com",
+  address: "ul. Przykładowa 1, 00-000 Miasto"
+};
+---
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <a href="/" class="footer__logo">
+          <span class="footer__logo-icon" aria-hidden="true">🥬</span>
+          <span class="footer__logo-text">Kapusta</span>
+        </a>
+        <p class="footer__tagline">
+          Świeże warzywa prosto od rolnika
+        </p>
+      </div>
+
+      <nav class="footer__nav" aria-label="Stopka - nawigacja">
+        <h3 class="footer__heading">Nawigacja</h3>
+        <ul class="footer__nav-list">
+          {footerLinks.map((link) => (
+            <li>
+              <a href={link.href} class="footer__link">{link.label}</a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
+      <div class="footer__contact">
+        <h3 class="footer__heading">Kontakt</h3>
+        <ul class="footer__contact-list">
+          <li>
+            <a href={`tel:${contactInfo.phoneLink}`} class="footer__link">
+              📞 {contactInfo.phone}
+            </a>
+          </li>
+          <li>
+            <a href={`mailto:${contactInfo.email}`} class="footer__link">
+              📧 {contactInfo.email}
+            </a>
+          </li>
+          <li class="footer__address">
+            📍 {contactInfo.address}
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer__bottom">
+      <p class="footer__copyright">
+        &copy; {currentYear} Gospodarstwo Rolne. Wszelkie prawa zastrzeżone.
+      </p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    background-color: var(--color-primary-dark);
+    color: var(--color-white);
+    padding: var(--spacing-xxl) 0 var(--spacing-lg);
+  }
+
+  .footer__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-xl);
+    margin-bottom: var(--spacing-xl);
+  }
+
+  .footer__brand {
+    text-align: center;
+  }
+
+  .footer__logo {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    text-decoration: none;
+    color: var(--color-white);
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: var(--spacing-sm);
+  }
+
+  .footer__logo:hover,
+  .footer__logo:focus {
+    color: var(--color-primary-lighter);
+  }
+
+  .footer__logo-icon {
+    font-size: 2rem;
+  }
+
+  .footer__tagline {
+    color: var(--color-primary-lighter);
+    margin-bottom: 0;
+  }
+
+  .footer__heading {
+    font-size: 1.1rem;
+    color: var(--color-white);
+    margin-bottom: var(--spacing-md);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .footer__nav,
+  .footer__contact {
+    text-align: center;
+  }
+
+  .footer__nav-list,
+  .footer__contact-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .footer__nav-list li,
+  .footer__contact-list li {
+    margin-bottom: var(--spacing-sm);
+  }
+
+  .footer__link {
+    color: var(--color-primary-lighter);
+    text-decoration: none;
+    font-size: var(--font-size-base);
+  }
+
+  .footer__link:hover,
+  .footer__link:focus {
+    color: var(--color-white);
+    text-decoration: underline;
+  }
+
+  .footer__address {
+    color: var(--color-primary-lighter);
+  }
+
+  .footer__bottom {
+    border-top: 1px solid var(--color-primary);
+    padding-top: var(--spacing-lg);
+    text-align: center;
+  }
+
+  .footer__copyright {
+    color: var(--color-primary-lighter);
+    font-size: var(--font-size-small);
+    margin-bottom: 0;
+  }
+
+  /* Desktop */
+  @media (min-width: 769px) {
+    .footer__grid {
+      grid-template-columns: 2fr 1fr 1fr;
+      text-align: left;
+    }
+
+    .footer__brand,
+    .footer__nav,
+    .footer__contact {
+      text-align: left;
+    }
+  }
+</style>

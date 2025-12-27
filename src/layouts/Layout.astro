@@ -1,22 +1,179 @@
-<!doctype html>
-<html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
-	</head>
-	<body>
-		<slot />
-	</body>
-</html>
+---
+import '../styles/global.css';
 
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
-</style>
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = "Sprzedaż Kapusty - Świeże Warzywa Prosto od Rolnika",
+  description = "Sprzedaż świeżej kapusty białej, czerwonej i kiszonej. Warzywa prosto od rolnika w konkurencyjnych cenach. Zamów telefonicznie lub odwiedź nas osobiście."
+} = Astro.props;
+
+const siteUrl = "https://example.com"; // Do zmiany na właściwy URL
+const ogImage = `${siteUrl}/og-image.jpg`;
+
+// Dane strukturalne JSON-LD dla LocalBusiness
+const localBusinessSchema = {
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "@id": siteUrl,
+  "name": "Sprzedaż Kapusty - Gospodarstwo Rolne",
+  "description": description,
+  "url": siteUrl,
+  "telephone": "+48 123 456 789",
+  "email": "kontakt@example.com",
+  "image": ogImage,
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "ul. Przykładowa 1",
+    "addressLocality": "Miasto",
+    "postalCode": "00-000",
+    "addressRegion": "Województwo",
+    "addressCountry": "PL"
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": "52.2297",
+    "longitude": "21.0122"
+  },
+  "openingHoursSpecification": [
+    {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+      "opens": "08:00",
+      "closes": "18:00"
+    },
+    {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": "Saturday",
+      "opens": "08:00",
+      "closes": "14:00"
+    }
+  ],
+  "priceRange": "$$",
+  "paymentAccepted": "Gotówka",
+  "areaServed": {
+    "@type": "GeoCircle",
+    "geoMidpoint": {
+      "@type": "GeoCoordinates",
+      "latitude": "52.2297",
+      "longitude": "21.0122"
+    },
+    "geoRadius": "50000"
+  }
+};
+
+// Dane strukturalne dla produktów
+const productsSchema = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": "Oferta kapusty",
+  "itemListElement": [
+    {
+      "@type": "Product",
+      "position": 1,
+      "name": "Kapusta biała",
+      "description": "Świeża kapusta biała, idealna do surówek, bigosu i gołąbków",
+      "offers": {
+        "@type": "Offer",
+        "price": "2.50",
+        "priceCurrency": "PLN",
+        "availability": "https://schema.org/InStock",
+        "priceValidUntil": "2025-12-31"
+      }
+    },
+    {
+      "@type": "Product",
+      "position": 2,
+      "name": "Kapusta czerwona",
+      "description": "Świeża kapusta czerwona, bogata w witaminy",
+      "offers": {
+        "@type": "Offer",
+        "price": "3.00",
+        "priceCurrency": "PLN",
+        "availability": "https://schema.org/InStock",
+        "priceValidUntil": "2025-12-31"
+      }
+    },
+    {
+      "@type": "Product",
+      "position": 3,
+      "name": "Kapusta kiszona",
+      "description": "Domowa kapusta kiszona, naturalna fermentacja",
+      "offers": {
+        "@type": "Offer",
+        "price": "5.00",
+        "priceCurrency": "PLN",
+        "availability": "https://schema.org/InStock",
+        "priceValidUntil": "2025-12-31"
+      }
+    },
+    {
+      "@type": "Product",
+      "position": 4,
+      "name": "Kapusta pekińska",
+      "description": "Świeża kapusta pekińska, delikatna i chrupiąca",
+      "offers": {
+        "@type": "Offer",
+        "price": "4.00",
+        "priceCurrency": "PLN",
+        "availability": "https://schema.org/InStock",
+        "priceValidUntil": "2025-12-31"
+      }
+    }
+  ]
+};
+---
+
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <!-- Podstawowe SEO -->
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="keywords" content="kapusta, sprzedaż kapusty, kapusta biała, kapusta czerwona, kapusta kiszona, świeże warzywa, warzywa od rolnika, gospodarstwo rolne" />
+    <meta name="author" content="Gospodarstwo Rolne" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href={siteUrl} />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={siteUrl} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:locale" content="pl_PL" />
+    <meta property="og:site_name" content="Sprzedaż Kapusty" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content={siteUrl} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
+
+    <!-- Preconnect dla Google Maps -->
+    <link rel="preconnect" href="https://maps.googleapis.com" />
+    <link rel="preconnect" href="https://maps.gstatic.com" crossorigin />
+
+    <!-- Dane strukturalne JSON-LD -->
+    <script type="application/ld+json" set:html={JSON.stringify(localBusinessSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(productsSchema)} />
+
+    <!-- Generator -->
+    <meta name="generator" content={Astro.generator} />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

@@ -1,0 +1,274 @@
+---
+const contactInfo = {
+  phone: "+48 123 456 789",
+  phoneLink: "+48123456789",
+  email: "kontakt@example.com",
+  address: {
+    street: "ul. Przykładowa 1",
+    city: "00-000 Miasto",
+    region: "Województwo"
+  },
+  hours: [
+    { days: "Poniedziałek - Piątek", time: "8:00 - 18:00" },
+    { days: "Sobota", time: "8:00 - 14:00" },
+    { days: "Niedziela", time: "Zamknięte" }
+  ],
+  // Współrzędne do mapy Google (przykładowe - Warszawa)
+  mapLat: "52.2297",
+  mapLng: "21.0122",
+  mapZoom: "14"
+};
+
+// URL do Google Maps embed (bez API key - podstawowa wersja)
+const mapUrl = `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2443.798!2d${contactInfo.mapLng}!3d${contactInfo.mapLat}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNTLCsDEzJzQ3LjAiTiAyMcKwMDAnNDMuOSJF!5e0!3m2!1spl!2spl!4v1234567890`;
+---
+
+<section id="kontakt" class="section contact">
+  <div class="container">
+    <h2 class="section__title">Kontakt</h2>
+
+    <div class="contact__grid">
+      <div class="contact__info">
+        <div class="contact__card">
+          <h3 class="contact__card-title">
+            <span class="contact__icon" aria-hidden="true">📞</span>
+            Telefon
+          </h3>
+          <a href={`tel:${contactInfo.phoneLink}`} class="contact__link contact__link--phone">
+            {contactInfo.phone}
+          </a>
+          <p class="contact__note">Zadzwoń, aby złożyć zamówienie lub zapytać o dostępność</p>
+        </div>
+
+        <div class="contact__card">
+          <h3 class="contact__card-title">
+            <span class="contact__icon" aria-hidden="true">📧</span>
+            Email
+          </h3>
+          <a href={`mailto:${contactInfo.email}`} class="contact__link">
+            {contactInfo.email}
+          </a>
+          <p class="contact__note">Odpowiadamy w ciągu 24 godzin</p>
+        </div>
+
+        <div class="contact__card">
+          <h3 class="contact__card-title">
+            <span class="contact__icon" aria-hidden="true">📍</span>
+            Adres
+          </h3>
+          <address class="contact__address">
+            {contactInfo.address.street}<br />
+            {contactInfo.address.city}<br />
+            {contactInfo.address.region}
+          </address>
+          <a
+            href={`https://www.google.com/maps/search/?api=1&query=${contactInfo.mapLat},${contactInfo.mapLng}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="contact__link"
+          >
+            Pokaż trasę w Google Maps →
+          </a>
+        </div>
+
+        <div class="contact__card">
+          <h3 class="contact__card-title">
+            <span class="contact__icon" aria-hidden="true">🕐</span>
+            Godziny otwarcia
+          </h3>
+          <ul class="contact__hours">
+            {contactInfo.hours.map((item) => (
+              <li class="contact__hours-item">
+                <span class="contact__hours-days">{item.days}</span>
+                <span class="contact__hours-time">{item.time}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+
+      <div class="contact__map">
+        <h3 class="sr-only">Mapa lokalizacji</h3>
+        <div class="contact__map-container">
+          <iframe
+            src={mapUrl}
+            width="100%"
+            height="400"
+            style="border:0;"
+            allowfullscreen=""
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            title="Mapa lokalizacji gospodarstwa"
+          ></iframe>
+        </div>
+        <p class="contact__map-note">
+          Kliknij mapę, aby otworzyć w Google Maps
+        </p>
+      </div>
+    </div>
+
+    <div class="contact__cta">
+      <p class="contact__cta-text">
+        Masz pytania? Zadzwoń do nas - chętnie pomożemy!
+      </p>
+      <a href={`tel:${contactInfo.phoneLink}`} class="btn btn--primary btn--large">
+        📞 Zadzwoń: {contactInfo.phone}
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .contact__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-xl);
+    margin-bottom: var(--spacing-xl);
+  }
+
+  .contact__info {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+  }
+
+  .contact__card {
+    background-color: var(--color-light);
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-lg);
+  }
+
+  .contact__card-title {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    font-size: var(--font-size-h3);
+    color: var(--color-primary-dark);
+    margin-bottom: var(--spacing-sm);
+  }
+
+  .contact__icon {
+    font-size: 1.5rem;
+  }
+
+  .contact__link {
+    display: block;
+    font-size: var(--font-size-large);
+    color: var(--color-primary);
+    margin-bottom: var(--spacing-xs);
+  }
+
+  .contact__link--phone {
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+
+  .contact__note {
+    font-size: var(--font-size-small);
+    color: var(--color-gray);
+    margin-bottom: 0;
+  }
+
+  .contact__address {
+    font-style: normal;
+    font-size: var(--font-size-large);
+    line-height: 1.8;
+    margin-bottom: var(--spacing-sm);
+    color: var(--color-dark);
+  }
+
+  .contact__hours {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .contact__hours-item {
+    display: flex;
+    justify-content: space-between;
+    padding: var(--spacing-xs) 0;
+    border-bottom: 1px solid var(--color-gray-light);
+    font-size: var(--font-size-base);
+  }
+
+  .contact__hours-item:last-child {
+    border-bottom: none;
+  }
+
+  .contact__hours-days {
+    color: var(--color-dark);
+  }
+
+  .contact__hours-time {
+    font-weight: 600;
+    color: var(--color-primary);
+  }
+
+  .contact__map-container {
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+    background-color: var(--color-light);
+  }
+
+  .contact__map-container iframe {
+    display: block;
+    width: 100%;
+    min-height: 300px;
+  }
+
+  .contact__map-note {
+    text-align: center;
+    font-size: var(--font-size-small);
+    color: var(--color-gray);
+    margin-top: var(--spacing-sm);
+    margin-bottom: 0;
+  }
+
+  .contact__cta {
+    background-color: var(--color-light-green);
+    padding: var(--spacing-xl);
+    border-radius: var(--radius-lg);
+    text-align: center;
+  }
+
+  .contact__cta-text {
+    font-size: var(--font-size-large);
+    color: var(--color-dark);
+    margin-bottom: var(--spacing-md);
+  }
+
+  .btn--large {
+    font-size: 1.25rem;
+    padding: var(--spacing-md) var(--spacing-xl);
+  }
+
+  /* Tablet */
+  @media (min-width: 600px) {
+    .contact__info {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  /* Desktop */
+  @media (min-width: 1024px) {
+    .contact__grid {
+      grid-template-columns: 1fr 1fr;
+      gap: var(--spacing-xxl);
+    }
+
+    .contact__info {
+      grid-template-columns: 1fr;
+    }
+
+    .contact__map-container iframe {
+      min-height: 100%;
+      height: 100%;
+    }
+
+    .contact__map-container {
+      height: 100%;
+      min-height: 400px;
+    }
+  }
+</style>

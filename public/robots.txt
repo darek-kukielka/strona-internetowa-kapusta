@@ -1,0 +1,8 @@
+# Robots.txt dla strony sprzedaży kapusty
+# https://www.robotstxt.org/
+
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://example.com/sitemap-index.xml

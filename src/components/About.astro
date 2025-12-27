@@ -1,0 +1,127 @@
+---
+const features = [
+  {
+    icon: "🌱",
+    title: "Naturalna uprawa",
+    description: "Warzywa uprawiane bez sztucznych nawozów i środków chemicznych"
+  },
+  {
+    icon: "🚜",
+    title: "Prosto z pola",
+    description: "Kapusta trafia do klienta świeżo zebrana, bez długiego przechowywania"
+  },
+  {
+    icon: "💰",
+    title: "Uczciwe ceny",
+    description: "Konkurencyjne ceny bez pośredników - kupujesz bezpośrednio od producenta"
+  },
+  {
+    icon: "🤝",
+    title: "Wieloletnie doświadczenie",
+    description: "Rodzinne gospodarstwo z tradycją przekazywaną od pokoleń"
+  }
+];
+---
+
+<section id="o-nas" class="section section--light about">
+  <div class="container">
+    <h2 class="section__title">O nas</h2>
+
+    <div class="about__content">
+      <div class="about__text">
+        <p class="about__lead">
+          Jesteśmy rodzinnym gospodarstwem rolnym specjalizującym się w uprawie kapusty.
+          Od wielu lat dostarczamy świeże warzywa dla klientów indywidualnych oraz hurtowych.
+        </p>
+        <p>
+          Nasze gospodarstwo znajduje się na żyznych glebach, co gwarantuje najwyższą jakość
+          uprawianych warzyw. Stosujemy tradycyjne metody uprawy, dbając o naturalny smak
+          i wartości odżywcze naszych produktów.
+        </p>
+        <p>
+          Zapraszamy do bezpośredniego zakupu - osobiście w gospodarstwie lub telefonicznie.
+          Realizujemy również większe zamówienia hurtowe z dostawą.
+        </p>
+      </div>
+    </div>
+
+    <div class="about__features">
+      {features.map((feature) => (
+        <div class="about__feature">
+          <span class="about__feature-icon" aria-hidden="true">{feature.icon}</span>
+          <h3 class="about__feature-title">{feature.title}</h3>
+          <p class="about__feature-description">{feature.description}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .about__content {
+    max-width: 800px;
+    margin: 0 auto var(--spacing-xl);
+    text-align: center;
+  }
+
+  .about__lead {
+    font-size: var(--font-size-large);
+    color: var(--color-dark);
+    font-weight: 500;
+    margin-bottom: var(--spacing-md);
+  }
+
+  .about__text p {
+    color: var(--color-gray);
+    margin-bottom: var(--spacing-sm);
+  }
+
+  .about__features {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-lg);
+  }
+
+  .about__feature {
+    background-color: var(--color-white);
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-lg);
+    text-align: center;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .about__feature-icon {
+    font-size: 3rem;
+    display: block;
+    margin-bottom: var(--spacing-sm);
+  }
+
+  .about__feature-title {
+    font-size: var(--font-size-h3);
+    color: var(--color-primary-dark);
+    margin-bottom: var(--spacing-xs);
+  }
+
+  .about__feature-description {
+    color: var(--color-gray);
+    margin-bottom: 0;
+  }
+
+  /* Tablet */
+  @media (min-width: 600px) {
+    .about__features {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  /* Desktop */
+  @media (min-width: 1024px) {
+    .about__features {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .about__feature {
+      padding: var(--spacing-xl) var(--spacing-lg);
+    }
+  }
+</style>
