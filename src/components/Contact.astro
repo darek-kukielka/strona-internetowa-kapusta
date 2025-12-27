@@ -1,5 +1,6 @@
 ---
 import type { ContactSection, SiteSettings } from '../lib/sanity';
+import { Icon } from "astro-icon/components";
 
 interface Props {
   contactSection?: ContactSection | null;
@@ -36,7 +37,7 @@ const mapUrl = `https://maps.google.com/maps?q=${mapLat},${mapLng}&z=15&output=e
       <div class="contact__info">
         <div class="contact__card">
           <h3 class="contact__card-title">
-            <span class="contact__icon" aria-hidden="true">📞</span>
+            <Icon name="lucide:phone" size={24} class="contact__icon" />
             Telefon
           </h3>
           <a href={`tel:${phoneLink}`} class="contact__link contact__link--phone">
@@ -47,7 +48,7 @@ const mapUrl = `https://maps.google.com/maps?q=${mapLat},${mapLng}&z=15&output=e
 
         <div class="contact__card">
           <h3 class="contact__card-title">
-            <span class="contact__icon" aria-hidden="true">📧</span>
+            <Icon name="lucide:mail" size={24} class="contact__icon" />
             Email
           </h3>
           <a href={`mailto:${email}`} class="contact__link">
@@ -58,7 +59,7 @@ const mapUrl = `https://maps.google.com/maps?q=${mapLat},${mapLng}&z=15&output=e
 
         <div class="contact__card">
           <h3 class="contact__card-title">
-            <span class="contact__icon" aria-hidden="true">📍</span>
+            <Icon name="lucide:map-pin" size={24} class="contact__icon" />
             Adres
           </h3>
           <address class="contact__address">
@@ -76,7 +77,7 @@ const mapUrl = `https://maps.google.com/maps?q=${mapLat},${mapLng}&z=15&output=e
 
         <div class="contact__card">
           <h3 class="contact__card-title">
-            <span class="contact__icon" aria-hidden="true">🕐</span>
+            <Icon name="lucide:clock" size={24} class="contact__icon" />
             Godziny otwarcia
           </h3>
           <ul class="contact__hours">
@@ -143,7 +144,8 @@ const mapUrl = `https://maps.google.com/maps?q=${mapLat},${mapLng}&z=15&output=e
   }
 
   .contact__icon {
-    font-size: 1.5rem;
+    color: var(--color-primary);
+    flex-shrink: 0;
   }
 
   .contact__link {

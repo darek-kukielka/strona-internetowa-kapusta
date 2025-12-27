@@ -1,5 +1,6 @@
 ---
 import type { SiteSettings, Navigation } from '../lib/sanity';
+import { Icon } from "astro-icon/components";
 
 interface Props {
   siteSettings?: SiteSettings | null;
@@ -30,7 +31,7 @@ const footerLinks = navigation?.items || [
     <div class="footer__grid">
       <div class="footer__brand">
         <a href="/" class="footer__logo">
-          <span class="footer__logo-icon" aria-hidden="true">🥬</span>
+          <Icon name="lucide:leafy-green" size={32} class="footer__logo-icon" />
           <span class="footer__logo-text">{siteName}</span>
         </a>
         <p class="footer__tagline">
@@ -53,17 +54,17 @@ const footerLinks = navigation?.items || [
         <h3 class="footer__heading">Kontakt</h3>
         <ul class="footer__contact-list">
           <li>
-            <a href={`tel:${phoneLink}`} class="footer__link">
-              📞 {phone}
+            <a href={`tel:${phoneLink}`} class="footer__link footer__link--icon">
+              <Icon name="lucide:phone" size={20} /> {phone}
             </a>
           </li>
           <li>
-            <a href={`mailto:${email}`} class="footer__link">
-              📧 {email}
+            <a href={`mailto:${email}`} class="footer__link footer__link--icon">
+              <Icon name="lucide:mail" size={20} /> {email}
             </a>
           </li>
           <li class="footer__address">
-            📍 {address}
+            <Icon name="lucide:map-pin" size={20} /> {address}
           </li>
         </ul>
       </div>
@@ -112,8 +113,7 @@ const footerLinks = navigation?.items || [
   }
 
   .footer__logo-icon {
-    font-size: 2rem;
-    line-height: 1;
+    flex-shrink: 0;
   }
 
   .footer__tagline {
@@ -153,6 +153,12 @@ const footerLinks = navigation?.items || [
     white-space: nowrap;
   }
 
+  .footer__link--icon {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+  }
+
   .footer__link:hover,
   .footer__link:focus {
     color: var(--color-white);
@@ -161,6 +167,10 @@ const footerLinks = navigation?.items || [
 
   .footer__address {
     color: var(--color-primary-lighter);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    justify-content: center;
   }
 
   .footer__bottom {
@@ -186,6 +196,10 @@ const footerLinks = navigation?.items || [
     .footer__nav,
     .footer__contact {
       text-align: left;
+    }
+
+    .footer__address {
+      justify-content: flex-start;
     }
   }
 </style>

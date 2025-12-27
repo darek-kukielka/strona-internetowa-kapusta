@@ -3,7 +3,9 @@
     "allow": [
       "Bash(npm install:*)",
       "mcp__Sanity__list_sanity_rules",
-      "mcp__Sanity__get_sanity_rules"
+      "mcp__Sanity__get_sanity_rules",
+      "WebFetch(domain:img.redro.pl)",
+      "WebFetch(domain:lucide.dev)"
     ],
     "deny": [],
     "ask": []

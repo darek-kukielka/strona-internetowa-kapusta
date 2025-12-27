@@ -33,9 +33,17 @@ export const about = defineType({
           fields: [
             defineField({
               name: 'icon',
-              title: 'Ikona (emoji)',
+              title: 'Ikona',
               type: 'string',
-              description: 'Emoji jako ikona, np. 🌱',
+              description: 'Wybierz ikonę dla tej cechy',
+              options: {
+                list: [
+                  { title: 'Roślina (naturalna uprawa)', value: 'seedling' },
+                  { title: 'Traktor (prosto z pola)', value: 'tractor' },
+                  { title: 'Pieniądze (uczciwe ceny)', value: 'money' },
+                  { title: 'Uścisk dłoni (doświadczenie)', value: 'handshake' },
+                ],
+              },
             }),
             defineField({
               name: 'title',

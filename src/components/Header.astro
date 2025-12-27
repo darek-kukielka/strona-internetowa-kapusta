@@ -1,5 +1,6 @@
 ---
 import type { Navigation, SiteSettings } from "../lib/sanity";
+import { Icon } from "astro-icon/components";
 
 interface Props {
   navigation?: Navigation | null;
@@ -23,7 +24,7 @@ const navItems = navigation?.items || [
 <header class="header">
   <div class="container header__container">
     <a href="/" class="header__logo" aria-label="Strona główna">
-      <span class="header__logo-icon" aria-hidden="true">🥬</span>
+      <Icon name="lucide:leafy-green" size={32} class="header__logo-icon" />
       <span class="header__logo-text">{siteName}</span>
     </a>
 
@@ -42,7 +43,7 @@ const navItems = navigation?.items || [
     </nav>
 
     <a href={`tel:${phoneLink}`} class="header__phone btn btn--primary">
-      <span aria-hidden="true">📞</span> Zadzwoń
+      <Icon name="lucide:phone" size={20} /> Zadzwoń
     </a>
 
     <!-- Menu mobilne -->
@@ -78,7 +79,7 @@ const navItems = navigation?.items || [
           href={`tel:${phoneLink}`}
           class="header__mobile-link header__mobile-link--phone"
         >
-          📞 Zadzwoń: {phone}
+          <Icon name="lucide:phone" size={20} /> Zadzwoń: {phone}
         </a>
       </li>
     </ul>
@@ -119,8 +120,7 @@ const navItems = navigation?.items || [
   }
 
   .header__logo-icon {
-    font-size: 2rem;
-    line-height: 1;
+    flex-shrink: 0;
   }
 
   .header__nav {
