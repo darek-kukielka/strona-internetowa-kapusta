@@ -1,18 +1,28 @@
 ---
+import type { SiteSettings, Navigation } from '../lib/sanity';
+
+interface Props {
+  siteSettings?: SiteSettings | null;
+  navigation?: Navigation | null;
+}
+
+const { siteSettings, navigation } = Astro.props;
+
 const currentYear = new Date().getFullYear();
 
-const footerLinks = [
-  { href: "#o-nas", label: "O nas" },
-  { href: "#oferta", label: "Oferta" },
-  { href: "#kontakt", label: "Kontakt" },
-];
+const siteName = siteSettings?.siteName || "AgrosPol";
+const siteTagline = siteSettings?.siteTagline || "Świeże warzywa prosto od rolnika";
+const phone = siteSettings?.contact?.phone || "+48 123 456 789";
+const phoneLink = phone.replace(/\s/g, '');
+const email = siteSettings?.contact?.email || "kontakt@example.com";
+const address = siteSettings?.contact?.address || "ul. Przykładowa 1, 00-000 Miasto";
 
-const contactInfo = {
-  phone: "+48 123 456 789",
-  phoneLink: "+48123456789",
-  email: "kontakt@example.com",
-  address: "ul. Przykładowa 1, 00-000 Miasto"
-};
+const footerLinks = navigation?.items || [
+  { _key: '1', href: "#o-nas", label: "O nas" },
+  { _key: '2', href: "#oferta", label: "Oferta" },
+  { _key: '3', href: "#galeria", label: "Galeria" },
+  { _key: '4', href: "#kontakt", label: "Kontakt" },
+];
 ---
 
 <footer class="footer">
@@ -21,10 +31,10 @@ const contactInfo = {
       <div class="footer__brand">
         <a href="/" class="footer__logo">
           <span class="footer__logo-icon" aria-hidden="true">🥬</span>
-          <span class="footer__logo-text">Kapusta</span>
+          <span class="footer__logo-text">{siteName}</span>
         </a>
         <p class="footer__tagline">
-          Świeże warzywa prosto od rolnika
+          {siteTagline}
         </p>
       </div>
 
@@ -43,17 +53,17 @@ const contactInfo = {
         <h3 class="footer__heading">Kontakt</h3>
         <ul class="footer__contact-list">
           <li>
-            <a href={`tel:${contactInfo.phoneLink}`} class="footer__link">
-              📞 {contactInfo.phone}
+            <a href={`tel:${phoneLink}`} class="footer__link">
+              📞 {phone}
             </a>
           </li>
           <li>
-            <a href={`mailto:${contactInfo.email}`} class="footer__link">
-              📧 {contactInfo.email}
+            <a href={`mailto:${email}`} class="footer__link">
+              📧 {email}
             </a>
           </li>
           <li class="footer__address">
-            📍 {contactInfo.address}
+            📍 {address}
           </li>
         </ul>
       </div>
@@ -61,7 +71,7 @@ const contactInfo = {
 
     <div class="footer__bottom">
       <p class="footer__copyright">
-        &copy; {currentYear} Gospodarstwo Rolne. Wszelkie prawa zastrzeżone.
+        &copy; {currentYear} {siteName}. Wszelkie prawa zastrzeżone.
       </p>
     </div>
   </div>
@@ -103,6 +113,7 @@ const contactInfo = {
 
   .footer__logo-icon {
     font-size: 2rem;
+    line-height: 1;
   }
 
   .footer__tagline {
@@ -139,6 +150,7 @@ const contactInfo = {
     color: var(--color-primary-lighter);
     text-decoration: none;
     font-size: var(--font-size-base);
+    white-space: nowrap;
   }
 
   .footer__link:hover,

@@ -1,73 +1,46 @@
 ---
-const products = [
-  {
-    name: "Kapusta biała",
-    price: "2,50 zł/kg",
-    description: "Klasyczna kapusta biała, idealna do surówek, bigosu, gołąbków i kiszenia. Twarda, soczysta główka.",
-    icon: "🥬",
-    available: true
-  },
-  {
-    name: "Kapusta czerwona",
-    price: "3,00 zł/kg",
-    description: "Kapusta czerwona bogata w witaminy i antyoksydanty. Doskonała do surówek i duszenia.",
-    icon: "🟣",
-    available: true
-  },
-  {
-    name: "Kapusta kiszona",
-    price: "5,00 zł/kg",
-    description: "Domowa kapusta kiszona metodą tradycyjną. Naturalna fermentacja bez konserwantów.",
-    icon: "🫙",
-    available: true
-  },
-  {
-    name: "Kapusta pekińska",
-    price: "4,00 zł/kg",
-    description: "Delikatna kapusta pekińska, chrupiąca i lekko słodka. Idealna do sałatek i dań azjatyckich.",
-    icon: "🥗",
-    available: true
-  }
+import type { OfferSection, Product } from '../lib/sanity';
+
+interface Props {
+  offerSection?: OfferSection | null;
+  products?: Product[];
+}
+
+const { offerSection, products = [] } = Astro.props;
+
+const sectionTitle = offerSection?.sectionTitle || "Nasza oferta";
+const introText = offerSection?.introText || "Oferujemy świeże warzywa w konkurencyjnych cenach. Przy większych zamówieniach możliwość negocjacji ceny.";
+
+const displayProducts = products.length > 0 ? products : [
+  { _id: '1', name: "Ziemniaki", description: "Świeże ziemniaki jadalne różnych odmian. Idealne do gotowania, pieczenia, smażenia i purée.", isAvailable: true, order: 0 },
+  { _id: '2', name: "Marchew", description: "Słodka i soczysta marchew. Doskonała do surówek, zup, dań obiadowych oraz świeżych soków.", isAvailable: true, order: 1 },
+  { _id: '3', name: "Buraki", description: "Świeże buraki ćwikłowe, bogate w witaminy i minerały. Idealne na barszcz i surówki.", isAvailable: true, order: 2 },
+  { _id: '4', name: "Cebula", description: "Aromatyczna cebula - podstawa każdej kuchni. Doskonała do duszenia, smażenia i na surowo.", isAvailable: true, order: 3 },
+  { _id: '5', name: "Kapusta biała", description: "Klasyczna kapusta biała, idealna do surówek, bigosu, gołąbków i kiszenia.", isAvailable: true, order: 4 },
+  { _id: '6', name: "Pietruszka", description: "Świeża pietruszka korzeniowa. Niezbędny składnik rosołu i wielu innych potraw.", isAvailable: true, order: 5 },
 ];
 ---
 
 <section id="oferta" class="section section--green offer">
   <div class="container">
-    <h2 class="section__title">Nasza oferta</h2>
+    <h2 class="section__title">{sectionTitle}</h2>
 
     <p class="offer__intro">
-      Oferujemy świeżą kapustę w konkurencyjnych cenach.
-      Przy większych zamówieniach możliwość negocjacji ceny.
+      {introText}
     </p>
 
     <div class="offer__grid">
-      {products.map((product) => (
-        <article class="offer__card">
-          <div class="offer__card-icon" aria-hidden="true">
-            {product.icon}
-          </div>
-          <div class="offer__card-content">
+      {
+        displayProducts.map((product) => (
+          <article class="offer__card">
             <h3 class="offer__card-title">{product.name}</h3>
             <p class="offer__card-description">{product.description}</p>
-            <div class="offer__card-footer">
-              <span class="offer__card-price">{product.price}</span>
-              {product.available && (
-                <span class="offer__card-status">Dostępna</span>
-              )}
-            </div>
-          </div>
-        </article>
-      ))}
-    </div>
-
-    <div class="offer__note">
-      <p>
-        <strong>Zamówienia hurtowe:</strong> Przy zamówieniach powyżej 100 kg oferujemy atrakcyjne rabaty.
-        Skontaktuj się z nami telefonicznie w celu ustalenia szczegółów.
-      </p>
-      <a href="tel:+48123456789" class="btn btn--primary offer__cta">
-        📞 Zamów telefonicznie
-      </a>
+            <span class={`offer__card-status ${product.isAvailable ? '' : 'offer__card-status--unavailable'}`}>
+              {product.isAvailable ? 'Dostępne' : 'Niedostępne'}
+            </span>
+          </article>
+        ))
+      }
     </div>
   </div>
 </section>
@@ -93,26 +66,12 @@ const products = [
     border-radius: var(--radius-lg);
     padding: var(--spacing-lg);
     box-shadow: var(--shadow-sm);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
     text-align: center;
     border: 2px solid transparent;
   }
 
   .offer__card:hover {
     border-color: var(--color-primary-light);
-  }
-
-  .offer__card-icon {
-    font-size: 4rem;
-    margin-bottom: var(--spacing-sm);
-  }
-
-  .offer__card-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
   }
 
   .offer__card-title {
@@ -124,42 +83,32 @@ const products = [
   .offer__card-description {
     color: var(--color-gray);
     margin-bottom: var(--spacing-md);
-    flex: 1;
-  }
-
-  .offer__card-footer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: var(--spacing-md);
-    flex-wrap: wrap;
-  }
-
-  .offer__card-price {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--color-primary);
-    background-color: var(--color-light-green);
-    padding: var(--spacing-xs) var(--spacing-sm);
-    border-radius: var(--radius-sm);
   }
 
   .offer__card-status {
     font-size: var(--font-size-small);
     color: var(--color-primary);
     font-weight: 600;
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: var(--spacing-xs);
   }
 
   .offer__card-status::before {
-    content: '';
+    content: "";
     display: inline-block;
     width: 10px;
     height: 10px;
     background-color: var(--color-primary);
     border-radius: 50%;
+  }
+
+  .offer__card-status--unavailable {
+    color: var(--color-gray);
+  }
+
+  .offer__card-status--unavailable::before {
+    background-color: var(--color-gray);
   }
 
   .offer__note {
@@ -186,37 +135,17 @@ const products = [
     .offer__grid {
       grid-template-columns: repeat(2, 1fr);
     }
-
-    .offer__card {
-      flex-direction: row;
-      text-align: left;
-      align-items: flex-start;
-      gap: var(--spacing-md);
-    }
-
-    .offer__card-icon {
-      font-size: 3rem;
-      margin-bottom: 0;
-    }
-
-    .offer__card-footer {
-      justify-content: flex-start;
-    }
   }
 
   /* Desktop */
   @media (min-width: 1024px) {
     .offer__grid {
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(3, 1fr);
       gap: var(--spacing-xl);
     }
 
     .offer__card {
       padding: var(--spacing-xl);
-    }
-
-    .offer__card-icon {
-      font-size: 4rem;
     }
   }
 </style>

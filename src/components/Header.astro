@@ -1,8 +1,22 @@
 ---
-const navItems = [
-  { href: "#o-nas", label: "O nas" },
-  { href: "#oferta", label: "Oferta" },
-  { href: "#kontakt", label: "Kontakt" },
+import type { Navigation, SiteSettings } from "../lib/sanity";
+
+interface Props {
+  navigation?: Navigation | null;
+  siteSettings?: SiteSettings | null;
+}
+
+const { navigation, siteSettings } = Astro.props;
+
+const siteName = siteSettings?.siteName || "AgrosPol";
+const phone = siteSettings?.contact?.phone || "+48 123 456 789";
+const phoneLink = phone.replace(/\s/g, "");
+
+const navItems = navigation?.items || [
+  { _key: "1", href: "#o-nas", label: "O nas" },
+  { _key: "2", href: "#oferta", label: "Oferta" },
+  { _key: "3", href: "#galeria", label: "Galeria" },
+  { _key: "4", href: "#kontakt", label: "Kontakt" },
 ];
 ---
 
@@ -10,22 +24,24 @@ const navItems = [
   <div class="container header__container">
     <a href="/" class="header__logo" aria-label="Strona główna">
       <span class="header__logo-icon" aria-hidden="true">🥬</span>
-      <span class="header__logo-text">Kapusta</span>
+      <span class="header__logo-text">{siteName}</span>
     </a>
 
     <nav class="header__nav" aria-label="Nawigacja główna">
       <ul class="header__nav-list">
-        {navItems.map((item) => (
-          <li class="header__nav-item">
-            <a href={item.href} class="header__nav-link">
-              {item.label}
-            </a>
-          </li>
-        ))}
+        {
+          navItems.map((item) => (
+            <li class="header__nav-item">
+              <a href={item.href} class="header__nav-link">
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
       </ul>
     </nav>
 
-    <a href="tel:+48123456789" class="header__phone btn btn--primary">
+    <a href={`tel:${phoneLink}`} class="header__phone btn btn--primary">
       <span aria-hidden="true">📞</span> Zadzwoń
     </a>
 
@@ -41,18 +57,28 @@ const navItems = [
   </div>
 
   <!-- Menu mobilne -->
-  <nav id="mobile-menu" class="header__mobile-nav" aria-label="Menu mobilne" hidden>
+  <nav
+    id="mobile-menu"
+    class="header__mobile-nav"
+    aria-label="Menu mobilne"
+    hidden
+  >
     <ul class="header__mobile-list">
-      {navItems.map((item) => (
-        <li class="header__mobile-item">
-          <a href={item.href} class="header__mobile-link">
-            {item.label}
-          </a>
-        </li>
-      ))}
+      {
+        navItems.map((item) => (
+          <li class="header__mobile-item">
+            <a href={item.href} class="header__mobile-link">
+              {item.label}
+            </a>
+          </li>
+        ))
+      }
       <li class="header__mobile-item">
-        <a href="tel:+48123456789" class="header__mobile-link header__mobile-link--phone">
-          📞 Zadzwoń: +48 123 456 789
+        <a
+          href={`tel:${phoneLink}`}
+          class="header__mobile-link header__mobile-link--phone"
+        >
+          📞 Zadzwoń: {phone}
         </a>
       </li>
     </ul>
@@ -94,6 +120,7 @@ const navItems = [
 
   .header__logo-icon {
     font-size: 2rem;
+    line-height: 1;
   }
 
   .header__nav {
@@ -152,7 +179,7 @@ const navItems = [
 
   .header__menu-icon::before,
   .header__menu-icon::after {
-    content: '';
+    content: "";
     position: absolute;
     left: 0;
     width: 24px;
@@ -210,6 +237,7 @@ const navItems = [
   .header__mobile-link--phone {
     color: var(--color-primary);
     font-weight: 700;
+    white-space: nowrap;
   }
 
   /* Desktop */
@@ -233,23 +261,26 @@ const navItems = [
 </style>
 
 <script>
-  const menuToggle = document.querySelector('.header__menu-toggle');
-  const mobileMenu = document.getElementById('mobile-menu');
-  const mobileLinks = document.querySelectorAll('.header__mobile-link');
+  const menuToggle = document.querySelector(".header__menu-toggle");
+  const mobileMenu = document.getElementById("mobile-menu");
+  const mobileLinks = document.querySelectorAll(".header__mobile-link");
 
   if (menuToggle && mobileMenu) {
-    menuToggle.addEventListener('click', () => {
-      const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
-      menuToggle.setAttribute('aria-expanded', (!isExpanded).toString());
-      menuToggle.setAttribute('aria-label', isExpanded ? 'Otwórz menu' : 'Zamknij menu');
+    menuToggle.addEventListener("click", () => {
+      const isExpanded = menuToggle.getAttribute("aria-expanded") === "true";
+      menuToggle.setAttribute("aria-expanded", (!isExpanded).toString());
+      menuToggle.setAttribute(
+        "aria-label",
+        isExpanded ? "Otwórz menu" : "Zamknij menu"
+      );
       mobileMenu.hidden = isExpanded;
     });
 
     // Zamknij menu po kliknięciu w link
-    mobileLinks.forEach(link => {
-      link.addEventListener('click', () => {
-        menuToggle.setAttribute('aria-expanded', 'false');
-        menuToggle.setAttribute('aria-label', 'Otwórz menu');
+    mobileLinks.forEach((link) => {
+      link.addEventListener("click", () => {
+        menuToggle.setAttribute("aria-expanded", "false");
+        menuToggle.setAttribute("aria-label", "Otwórz menu");
         mobileMenu.hidden = true;
       });
     });

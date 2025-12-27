@@ -4,17 +4,37 @@ import Header from '../components/Header.astro';
 import Hero from '../components/Hero.astro';
 import About from '../components/About.astro';
 import Offer from '../components/Offer.astro';
+import Gallery from '../components/Gallery.astro';
 import Contact from '../components/Contact.astro';
 import Footer from '../components/Footer.astro';
+import { getPageData } from '../lib/sanity';
+
+const data = await getPageData();
 ---
 
-<Layout>
-  <Header />
+<Layout siteSettings={data.siteSettings}>
+  <Header
+    navigation={data.navigation}
+    siteSettings={data.siteSettings}
+  />
   <main id="main-content">
-    <Hero />
-    <About />
-    <Offer />
-    <Contact />
+    <Hero hero={data.hero} />
+    <About about={data.about} />
+    <Offer
+      offerSection={data.offerSection}
+      products={data.products}
+    />
+    <Gallery
+      gallerySection={data.gallerySection}
+      images={data.galleryImages}
+    />
+    <Contact
+      contactSection={data.contactSection}
+      siteSettings={data.siteSettings}
+    />
   </main>
-  <Footer />
+  <Footer
+    siteSettings={data.siteSettings}
+    navigation={data.navigation}
+  />
 </Layout>

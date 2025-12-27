@@ -1,0 +1,378 @@
+---
+import type { GallerySection, GalleryImage } from '../lib/sanity';
+import { urlFor } from '../lib/sanity';
+
+interface Props {
+  gallerySection?: GallerySection | null;
+  images?: GalleryImage[];
+}
+
+const { gallerySection, images = [] } = Astro.props;
+
+const sectionTitle = gallerySection?.sectionTitle || "Galeria";
+
+const displayImages = images.length > 0 ? images : [
+  { _id: '1', alt: "Świeże warzywa z pola", order: 0 },
+  { _id: '2', alt: "Ziemniaki prosto od rolnika", order: 1 },
+  { _id: '3', alt: "Marchew i buraki", order: 2 },
+  { _id: '4', alt: "Kapusta biała", order: 3 },
+  { _id: '5', alt: "Cebula i pietruszka", order: 4 },
+  { _id: '6', alt: "Nasze gospodarstwo", order: 5 },
+  { _id: '7', alt: "Zbiory warzyw", order: 6 },
+  { _id: '8', alt: "Transport warzyw", order: 7 },
+];
+
+// Prepare images data for lightbox script
+const imagesData = displayImages.map(img => ({
+  src: 'image' in img && img.image ? urlFor(img.image).width(1200).url() : null,
+  alt: img.alt
+}));
+---
+
+<section id="galeria" class="section gallery">
+  <div class="container">
+    <h2 class="section__title">{sectionTitle}</h2>
+
+    <div class="gallery__grid">
+      {
+        displayImages.map((image, index) => (
+          <button
+            class="gallery__item"
+            data-index={index}
+            aria-label={`Otwórz zdjęcie: ${image.alt}`}
+          >
+            {'image' in image && image.image ? (
+              <img
+                src={urlFor(image.image).width(400).height(400).url()}
+                alt={image.alt}
+                class="gallery__image"
+                loading="lazy"
+              />
+            ) : (
+              <div class="gallery__placeholder">
+                <svg viewBox="0 0 100 100" aria-hidden="true">
+                  <rect width="100" height="100" fill="#E8F5E9"/>
+                  <circle cx="30" cy="35" r="10" fill="#81C784"/>
+                  <path d="M10 70 L35 45 L55 65 L70 50 L90 70 L90 90 L10 90 Z" fill="#A5D6A7"/>
+                </svg>
+                <span class="gallery__placeholder-text">{image.alt}</span>
+              </div>
+            )}
+          </button>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox" hidden>
+  <div class="lightbox__overlay"></div>
+  <div class="lightbox__content">
+    <button class="lightbox__close" aria-label="Zamknij galerię">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+    <button class="lightbox__nav lightbox__nav--prev" aria-label="Poprzednie zdjęcie">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="15 18 9 12 15 6"></polyline>
+      </svg>
+    </button>
+    <div class="lightbox__image-container">
+      <div class="lightbox__image-wrapper" id="lightbox-image">
+        <div class="lightbox__placeholder">
+          <svg viewBox="0 0 100 100" aria-hidden="true">
+            <rect width="100" height="100" fill="#E8F5E9"/>
+            <circle cx="30" cy="35" r="10" fill="#81C784"/>
+            <path d="M10 70 L35 45 L55 65 L70 50 L90 70 L90 90 L10 90 Z" fill="#A5D6A7"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+    <button class="lightbox__nav lightbox__nav--next" aria-label="Następne zdjęcie">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="9 18 15 12 9 6"></polyline>
+      </svg>
+    </button>
+    <div class="lightbox__counter" id="lightbox-counter"></div>
+  </div>
+</div>
+
+<script define:vars={{ imagesData }}>
+  let currentIndex = 0;
+  const images = imagesData;
+
+  const lightbox = document.getElementById("lightbox");
+  const lightboxImage = document.getElementById("lightbox-image");
+  const lightboxCounter = document.getElementById("lightbox-counter");
+  const galleryItems = document.querySelectorAll(".gallery__item");
+  const closeBtn = document.querySelector(".lightbox__close");
+  const prevBtn = document.querySelector(".lightbox__nav--prev");
+  const nextBtn = document.querySelector(".lightbox__nav--next");
+  const overlay = document.querySelector(".lightbox__overlay");
+
+  function openLightbox(index) {
+    currentIndex = index;
+    updateLightbox();
+    lightbox?.removeAttribute("hidden");
+    document.body.style.overflow = "hidden";
+  }
+
+  function closeLightbox() {
+    lightbox?.setAttribute("hidden", "");
+    document.body.style.overflow = "";
+  }
+
+  function updateLightbox() {
+    const currentImage = images[currentIndex];
+
+    if (lightboxImage) {
+      if (currentImage.src) {
+        lightboxImage.innerHTML = `<img src="${currentImage.src}" alt="${currentImage.alt}" class="lightbox__img" />`;
+      } else {
+        lightboxImage.innerHTML = `
+          <div class="lightbox__placeholder">
+            <svg viewBox="0 0 100 100" aria-hidden="true">
+              <rect width="100" height="100" fill="#E8F5E9"/>
+              <circle cx="30" cy="35" r="10" fill="#81C784"/>
+              <path d="M10 70 L35 45 L55 65 L70 50 L90 70 L90 90 L10 90 Z" fill="#A5D6A7"/>
+            </svg>
+          </div>
+        `;
+      }
+    }
+
+    if (lightboxCounter) {
+      lightboxCounter.textContent = `${currentIndex + 1} / ${images.length}`;
+    }
+  }
+
+  function showPrev() {
+    currentIndex = currentIndex === 0 ? images.length - 1 : currentIndex - 1;
+    updateLightbox();
+  }
+
+  function showNext() {
+    currentIndex = currentIndex === images.length - 1 ? 0 : currentIndex + 1;
+    updateLightbox();
+  }
+
+  galleryItems.forEach((item) => {
+    item.addEventListener("click", () => {
+      const index = parseInt(item.getAttribute("data-index") || "0", 10);
+      openLightbox(index);
+    });
+  });
+
+  closeBtn?.addEventListener("click", closeLightbox);
+  overlay?.addEventListener("click", closeLightbox);
+  prevBtn?.addEventListener("click", showPrev);
+  nextBtn?.addEventListener("click", showNext);
+
+  document.addEventListener("keydown", (e) => {
+    if (lightbox?.hasAttribute("hidden")) return;
+
+    if (e.key === "Escape") closeLightbox();
+    if (e.key === "ArrowLeft") showPrev();
+    if (e.key === "ArrowRight") showNext();
+  });
+</script>
+
+<style>
+  .gallery__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-md);
+  }
+
+  .gallery__item {
+    aspect-ratio: 1;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background: none;
+  }
+
+  .gallery__item:hover .gallery__placeholder,
+  .gallery__item:focus .gallery__placeholder,
+  .gallery__item:hover .gallery__image,
+  .gallery__item:focus .gallery__image {
+    transform: scale(1.05);
+  }
+
+  .gallery__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  .gallery__placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-light-green);
+    transition: transform 0.3s ease;
+  }
+
+  .gallery__placeholder svg {
+    width: 60%;
+    height: 60%;
+  }
+
+  .gallery__placeholder-text {
+    font-size: var(--font-size-small);
+    color: var(--color-primary-dark);
+    text-align: center;
+    padding: var(--spacing-xs);
+  }
+
+  /* Lightbox */
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .lightbox[hidden] {
+    display: none;
+  }
+
+  .lightbox__overlay {
+    position: absolute;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.9);
+  }
+
+  .lightbox__content {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-xl);
+  }
+
+  .lightbox__close {
+    position: absolute;
+    top: var(--spacing-md);
+    right: var(--spacing-md);
+    background: none;
+    border: none;
+    color: var(--color-white);
+    cursor: pointer;
+    padding: var(--spacing-sm);
+    z-index: 10;
+  }
+
+  .lightbox__close:hover,
+  .lightbox__close:focus {
+    color: var(--color-primary-light);
+  }
+
+  .lightbox__nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--color-white);
+    cursor: pointer;
+    padding: var(--spacing-sm);
+    z-index: 10;
+  }
+
+  .lightbox__nav:hover,
+  .lightbox__nav:focus {
+    color: var(--color-primary-light);
+  }
+
+  .lightbox__nav--prev {
+    left: var(--spacing-sm);
+  }
+
+  .lightbox__nav--next {
+    right: var(--spacing-sm);
+  }
+
+  .lightbox__image-container {
+    max-width: 90%;
+    max-height: 80%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .lightbox__image-wrapper {
+    max-width: 100%;
+    max-height: 70vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .lightbox__image-wrapper :global(.lightbox__img) {
+    max-width: 100%;
+    max-height: 70vh;
+    object-fit: contain;
+    border-radius: var(--radius-md);
+  }
+
+  .lightbox__image-wrapper .lightbox__placeholder {
+    width: 400px;
+    max-width: 100%;
+    aspect-ratio: 4/3;
+    background-color: var(--color-light-green);
+    border-radius: var(--radius-md);
+  }
+
+  .lightbox__counter {
+    position: absolute;
+    bottom: var(--spacing-md);
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--color-white);
+    font-size: var(--font-size-base);
+  }
+
+  /* Tablet */
+  @media (min-width: 600px) {
+    .gallery__grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .lightbox__nav--prev {
+      left: var(--spacing-md);
+    }
+
+    .lightbox__nav--next {
+      right: var(--spacing-md);
+    }
+  }
+
+  /* Desktop */
+  @media (min-width: 1024px) {
+    .gallery__grid {
+      gap: var(--spacing-lg);
+    }
+
+    .lightbox__nav--prev {
+      left: var(--spacing-xl);
+    }
+
+    .lightbox__nav--next {
+      right: var(--spacing-xl);
+    }
+  }
+</style>

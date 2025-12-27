@@ -1,21 +1,36 @@
 ---
-const features = [
+import type { About } from '../lib/sanity';
+
+interface Props {
+  about?: About | null;
+}
+
+const { about } = Astro.props;
+
+const sectionTitle = about?.sectionTitle || "O nas";
+const description = about?.description || "Jesteśmy rodzinnym gospodarstwem rolnym specjalizującym się w uprawie warzyw. Od wielu lat dostarczamy świeże produkty dla klientów indywidualnych oraz hurtowych. Nasze gospodarstwo znajduje się na żyznych glebach, co gwarantuje najwyższą jakość uprawianych warzyw.";
+
+const features = about?.features || [
   {
+    _key: '1',
     icon: "🌱",
     title: "Naturalna uprawa",
     description: "Warzywa uprawiane bez sztucznych nawozów i środków chemicznych"
   },
   {
+    _key: '2',
     icon: "🚜",
     title: "Prosto z pola",
-    description: "Kapusta trafia do klienta świeżo zebrana, bez długiego przechowywania"
+    description: "Warzywa trafiają do klienta świeżo zebrane, bez długiego przechowywania"
   },
   {
+    _key: '3',
     icon: "💰",
     title: "Uczciwe ceny",
     description: "Konkurencyjne ceny bez pośredników - kupujesz bezpośrednio od producenta"
   },
   {
+    _key: '4',
     icon: "🤝",
     title: "Wieloletnie doświadczenie",
     description: "Rodzinne gospodarstwo z tradycją przekazywaną od pokoleń"
@@ -25,24 +40,12 @@ const features = [
 
 <section id="o-nas" class="section section--light about">
   <div class="container">
-    <h2 class="section__title">O nas</h2>
+    <h2 class="section__title">{sectionTitle}</h2>
 
     <div class="about__content">
-      <div class="about__text">
-        <p class="about__lead">
-          Jesteśmy rodzinnym gospodarstwem rolnym specjalizującym się w uprawie kapusty.
-          Od wielu lat dostarczamy świeże warzywa dla klientów indywidualnych oraz hurtowych.
-        </p>
-        <p>
-          Nasze gospodarstwo znajduje się na żyznych glebach, co gwarantuje najwyższą jakość
-          uprawianych warzyw. Stosujemy tradycyjne metody uprawy, dbając o naturalny smak
-          i wartości odżywcze naszych produktów.
-        </p>
-        <p>
-          Zapraszamy do bezpośredniego zakupu - osobiście w gospodarstwie lub telefonicznie.
-          Realizujemy również większe zamówienia hurtowe z dostawą.
-        </p>
-      </div>
+      <p class="about__description">
+        {description}
+      </p>
     </div>
 
     <div class="about__features">
@@ -50,7 +53,9 @@ const features = [
         <div class="about__feature">
           <span class="about__feature-icon" aria-hidden="true">{feature.icon}</span>
           <h3 class="about__feature-title">{feature.title}</h3>
-          <p class="about__feature-description">{feature.description}</p>
+          {feature.description && (
+            <p class="about__feature-description">{feature.description}</p>
+          )}
         </div>
       ))}
     </div>
@@ -64,16 +69,10 @@ const features = [
     text-align: center;
   }
 
-  .about__lead {
+  .about__description {
     font-size: var(--font-size-large);
-    color: var(--color-dark);
-    font-weight: 500;
-    margin-bottom: var(--spacing-md);
-  }
-
-  .about__text p {
     color: var(--color-gray);
-    margin-bottom: var(--spacing-sm);
+    line-height: 1.8;
   }
 
   .about__features {

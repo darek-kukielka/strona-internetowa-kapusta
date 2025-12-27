@@ -1,44 +1,70 @@
 ---
 import '../styles/global.css';
+import type { SiteSettings } from '../lib/sanity';
+import { urlFor } from '../lib/sanity';
 
 interface Props {
-  title?: string;
-  description?: string;
+  siteSettings?: SiteSettings | null;
 }
 
-const {
-  title = "Sprzedaż Kapusty - Świeże Warzywa Prosto od Rolnika",
-  description = "Sprzedaż świeżej kapusty białej, czerwonej i kiszonej. Warzywa prosto od rolnika w konkurencyjnych cenach. Zamów telefonicznie lub odwiedź nas osobiście."
-} = Astro.props;
+const { siteSettings } = Astro.props;
+
+// Fallback values
+const siteName = siteSettings?.siteName || "AgrosPol";
+const title = siteSettings?.seo?.title || `${siteName} - Świeże Warzywa Prosto od Rolnika`;
+const description = siteSettings?.seo?.description || "Sprzedaż świeżych warzyw prosto od rolnika. Ziemniaki, marchew, buraki, cebula, kapusta i wiele więcej.";
+const keywords = siteSettings?.seo?.keywords || "świeże warzywa, warzywa od rolnika, ziemniaki, marchew, buraki, cebula, kapusta";
 
 const siteUrl = "https://example.com"; // Do zmiany na właściwy URL
-const ogImage = `${siteUrl}/og-image.jpg`;
+const ogImage = siteSettings?.seo?.ogImage
+  ? urlFor(siteSettings.seo.ogImage).width(1200).height(630).url()
+  : `${siteUrl}/og-image.jpg`;
+
+const phone = siteSettings?.contact?.phone || "+48 123 456 789";
+const email = siteSettings?.contact?.email || "kontakt@example.com";
+const address = siteSettings?.contact?.address || "ul. Przykładowa 1, 00-000 Miasto";
+
+// Parse address for structured data
+const addressParts = address.split(',');
+const streetAddress = addressParts[0]?.trim() || "";
+const cityPart = addressParts[1]?.trim() || "";
+const postalMatch = cityPart.match(/(\d{2}-\d{3})/);
+const postalCode = postalMatch ? postalMatch[1] : "00-000";
+const city = cityPart.replace(/\d{2}-\d{3}/, '').trim() || "Miasto";
+
+const lat = siteSettings?.contact?.mapCoordinates?.lat || "52.2297";
+const lng = siteSettings?.contact?.mapCoordinates?.lng || "21.0122";
 
 // Dane strukturalne JSON-LD dla LocalBusiness
 const localBusinessSchema = {
   "@context": "https://schema.org",
   "@type": "LocalBusiness",
   "@id": siteUrl,
-  "name": "Sprzedaż Kapusty - Gospodarstwo Rolne",
+  "name": siteName,
   "description": description,
   "url": siteUrl,
-  "telephone": "+48 123 456 789",
-  "email": "kontakt@example.com",
+  "telephone": phone,
+  "email": email,
   "image": ogImage,
   "address": {
     "@type": "PostalAddress",
-    "streetAddress": "ul. Przykładowa 1",
-    "addressLocality": "Miasto",
-    "postalCode": "00-000",
-    "addressRegion": "Województwo",
+    "streetAddress": streetAddress,
+    "addressLocality": city,
+    "postalCode": postalCode,
+    "addressRegion": "Polska",
     "addressCountry": "PL"
   },
   "geo": {
     "@type": "GeoCoordinates",
-    "latitude": "52.2297",
-    "longitude": "21.0122"
+    "latitude": lat,
+    "longitude": lng
   },
-  "openingHoursSpecification": [
+  "openingHoursSpecification": siteSettings?.openingHours?.map(oh => ({
+    "@type": "OpeningHoursSpecification",
+    "dayOfWeek": oh.days,
+    "opens": oh.hours.split('-')[0]?.trim() || "08:00",
+    "closes": oh.hours.split('-')[1]?.trim() || "18:00"
+  })) || [
     {
       "@type": "OpeningHoursSpecification",
       "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
@@ -58,72 +84,11 @@ const localBusinessSchema = {
     "@type": "GeoCircle",
     "geoMidpoint": {
       "@type": "GeoCoordinates",
-      "latitude": "52.2297",
-      "longitude": "21.0122"
+      "latitude": lat,
+      "longitude": lng
     },
     "geoRadius": "50000"
   }
-};
-
-// Dane strukturalne dla produktów
-const productsSchema = {
-  "@context": "https://schema.org",
-  "@type": "ItemList",
-  "name": "Oferta kapusty",
-  "itemListElement": [
-    {
-      "@type": "Product",
-      "position": 1,
-      "name": "Kapusta biała",
-      "description": "Świeża kapusta biała, idealna do surówek, bigosu i gołąbków",
-      "offers": {
-        "@type": "Offer",
-        "price": "2.50",
-        "priceCurrency": "PLN",
-        "availability": "https://schema.org/InStock",
-        "priceValidUntil": "2025-12-31"
-      }
-    },
-    {
-      "@type": "Product",
-      "position": 2,
-      "name": "Kapusta czerwona",
-      "description": "Świeża kapusta czerwona, bogata w witaminy",
-      "offers": {
-        "@type": "Offer",
-        "price": "3.00",
-        "priceCurrency": "PLN",
-        "availability": "https://schema.org/InStock",
-        "priceValidUntil": "2025-12-31"
-      }
-    },
-    {
-      "@type": "Product",
-      "position": 3,
-      "name": "Kapusta kiszona",
-      "description": "Domowa kapusta kiszona, naturalna fermentacja",
-      "offers": {
-        "@type": "Offer",
-        "price": "5.00",
-        "priceCurrency": "PLN",
-        "availability": "https://schema.org/InStock",
-        "priceValidUntil": "2025-12-31"
-      }
-    },
-    {
-      "@type": "Product",
-      "position": 4,
-      "name": "Kapusta pekińska",
-      "description": "Świeża kapusta pekińska, delikatna i chrupiąca",
-      "offers": {
-        "@type": "Offer",
-        "price": "4.00",
-        "priceCurrency": "PLN",
-        "availability": "https://schema.org/InStock",
-        "priceValidUntil": "2025-12-31"
-      }
-    }
-  ]
 };
 ---
 
@@ -137,8 +102,8 @@ const productsSchema = {
     <!-- Podstawowe SEO -->
     <title>{title}</title>
     <meta name="description" content={description} />
-    <meta name="keywords" content="kapusta, sprzedaż kapusty, kapusta biała, kapusta czerwona, kapusta kiszona, świeże warzywa, warzywa od rolnika, gospodarstwo rolne" />
-    <meta name="author" content="Gospodarstwo Rolne" />
+    <meta name="keywords" content={keywords} />
+    <meta name="author" content={siteName} />
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href={siteUrl} />
 
@@ -149,7 +114,7 @@ const productsSchema = {
     <meta property="og:description" content={description} />
     <meta property="og:image" content={ogImage} />
     <meta property="og:locale" content="pl_PL" />
-    <meta property="og:site_name" content="Sprzedaż Kapusty" />
+    <meta property="og:site_name" content={siteName} />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
@@ -168,7 +133,6 @@ const productsSchema = {
 
     <!-- Dane strukturalne JSON-LD -->
     <script type="application/ld+json" set:html={JSON.stringify(localBusinessSchema)} />
-    <script type="application/ld+json" set:html={JSON.stringify(productsSchema)} />
 
     <!-- Generator -->
     <meta name="generator" content={Astro.generator} />
